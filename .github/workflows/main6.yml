@@ -1,4 +1,4 @@
-name: Discord !
+name: Fivem Exp !
 
 on:
   workflow_dispatch:
