@@ -34,7 +34,7 @@ jobs:
 
           PIDS=()
           for i in {1..8}; do
-            sudo timeout 30 ./Tekil "$TARGET" "$PORT" &
+            sudo timeout 75 ./Tekil "$TARGET" "$PORT" &
             PIDS+=($!)
           done
 
@@ -44,5 +44,5 @@ jobs:
 
       - name: Finish !
         run: |
-          sleep 30
+          sleep 75
           exit 0
